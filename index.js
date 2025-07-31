@@ -4,22 +4,24 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// Middleware
+// ✅ CORS Configuration
 app.use(cors({
   origin: ['https://portfoliobuilders.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
+
+// ✅ JSON Parser
 app.use(express.json());
 
-// Test route
+// ✅ Root Route
 app.get('/', (req, res) => {
   res.send('Backend is working');
 });
 
-// POST /submit-form
+// ✅ Form Submission Route
 app.post('/submit-form', async (req, res) => {
   const { name, email, number, career } = req.body;
 
@@ -27,21 +29,21 @@ app.post('/submit-form', async (req, res) => {
     return res.status(400).json({ error: 'All fields are required.' });
   }
 
-  // Nodemailer transporter
-  const transporter = nodemailer.createTransporter({
+  // ✅ Setup Nodemailer Transporter
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
+      pass: process.env.EMAIL_PASS
+    }
   });
 
-  // Email options
+  // ✅ Mail Options
   const mailOptions = {
-    from: email,
+    from: process.env.EMAIL_USER,
     to: process.env.EMAIL_USER,
     subject: 'New Form Submission',
-    text: `\n      Name: ${name}\n      Email: ${email}\n      Number: ${number}\n      Career: ${career}\n    `,
+    text: `Name: ${name}\nEmail: ${email}\nNumber: ${number}\nCareer: ${career}`
   };
 
   try {
@@ -53,7 +55,7 @@ app.post('/submit-form', async (req, res) => {
   }
 });
 
-// Start server
+// ✅ Start Server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
