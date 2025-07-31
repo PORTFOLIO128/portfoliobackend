@@ -8,7 +8,9 @@ const PORT = 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['https://portfoliobuilders.vercel.app', 'http://localhost:3000']
+  origin: ['https://portfoliobuilders.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  credentials: true
 }));
 app.use(express.json());
 
